@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.msk</groupId>
-	<artifactId>movie-catalog-service</artifactId>
+	<artifactId>discovery-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>movie-catalog-service</name>
-	<description>Movie catalog microservice</description>
+	<name>discovery-server</name>
+	<description>Eureka discovery server</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -21,19 +21,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
 		</dependency>
-		
-		<dependency>
-      		<groupId>org.springframework.cloud</groupId>
-      		<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-    	</dependency>
-		
-		 <dependency>
-      		<groupId>org.springframework.boot</groupId>
-      		<artifactId>spring-boot-starter-webflux</artifactId>
-    	</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -41,18 +31,18 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<dependencyManagement>
-    	<dependencies>
-      		<dependency>
-        		<groupId>org.springframework.cloud</groupId>
-        		<artifactId>spring-cloud-dependencies</artifactId>
-        		<version>${spring-cloud.version}</version>
-        		<type>pom</type>
-        		<scope>import</scope>
-      		</dependency>
-    	</dependencies>
-  	</dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>
