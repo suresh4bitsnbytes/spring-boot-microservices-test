@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -18,13 +20,19 @@ import com.msk.moviecatalogservice.models.CatalogItem;
 import com.msk.moviecatalogservice.models.Movie;
 import com.msk.moviecatalogservice.models.Rating;
 import com.msk.moviecatalogservice.models.UserRating;
+import com.msk.moviecatalogservice.services.MovieInfo;
+import com.msk.moviecatalogservice.services.UserRatingInfo;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 @RequestMapping("/catalog")
 public class MovieCatalogResource {
+		
+	@Autowired
+	private MovieInfo movieInfo;
 	
 	@Autowired
-	private RestTemplate restTemplate;
+	private UserRatingInfo userRatingInfo;
 	
 //	@Autowired
 //	private WebClient.Builder webClientBuilder;
@@ -32,24 +40,12 @@ public class MovieCatalogResource {
 	@RequestMapping("/{userId}")
 	public List<CatalogItem> getCatalog(@PathVariable String userId){
 		
-		UserRating userRating = restTemplate.getForObject("http://ratings-data-service/ratingsdata/users/"+userId, UserRating.class);
+		UserRating userRating = userRatingInfo.getUserRating(userId);
 		
-		return userRating.getRatings().stream().map(rating-> {
-			
-			//Using RestTemplate
-			Movie movie = restTemplate.getForObject("http://movie-info-service/movies/"+rating.getMovieId(), Movie.class);
-			
-			/*
-			//using WebClient
-			Movie movie = webClientBuilder.build()
-					.get()
-					.uri("http://localhost:8082/movies/"+rating.getMovieId())
-					.retrieve()
-					.bodyToMono(Movie.class)
-					.block();
-			*/
-			return new CatalogItem(movie.getName(), "Movie Desc", rating.getRating());
-		}).collect(Collectors.toList());
+		return userRating.getRatings().stream()
+				.map(rating-> movieInfo.getCatalogItem(rating))
+				.collect(Collectors.toList());
 		
 	}
+
 } 
